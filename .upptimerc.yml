@@ -1,31 +1,77 @@
 # Change these first
-owner: upptime # Your GitHub organization or username, where this repository lives
-repo: upptime # The name of this repository
+owner: taiuanpagini # Your GitHub organization or username, where this repository lives
+repo: cf-status # The name of this repository
+
+# Custom user-agent used by the uptime monitor when probing endpoints
+user-agent: CFly-Status-Bot
 
 sites:
-  - name: Google
-    url: https://www.google.com
-  - name: Wikipedia
-    url: https://en.wikipedia.org
-  - name: Hacker News
-    url: https://news.ycombinator.com
-  - name: Secret Site
-    url: $SECRET_SITE
+  # --- Grupo 1: Ambientes CFly (QAS) ---
+  - name: CFly Web App (QAS)
+    url: https://app.qas.cfly.ai:11443
+    method: GET
+    check: status-code
+    expectedStatusCodes:
+      - 200
+  - name: CFly API Liveness (QAS)
+    url: https://app.qas.cfly.ai:11443/health
+    method: GET
+    check: status-code
+    expectedStatusCodes:
+      - 200
+  - name: CFly Database Readiness (QAS)
+    url: https://app.qas.cfly.ai:11443/health/db
+    method: GET
+    check: status-code
+    expectedStatusCodes:
+      - 200
+  - name: CFly Identity & Auth (QAS)
+    url: https://auth.contentfly.ai:12443/realms/master
+    method: GET
+    check: status-code
+    expectedStatusCodes:
+      - 200
+
+  # --- Grupo 2: Provedores Externos de IA (Status APIs) ---
+  - name: OpenAI API Status
+    url: https://status.openai.com/api/v2/status.json
+    method: GET
+    check: status-code
+    expectedStatusCodes:
+      - 200
+  - name: Anthropic Claude API Status
+    url: https://status.anthropic.com/api/v2/status.json
+    method: GET
+    check: status-code
+    expectedStatusCodes:
+      - 200
+  - name: Google Cloud AI / Vertex Status
+    url: https://status.cloud.google.com/incidents.json
+    method: GET
+    check: status-code
+    expectedStatusCodes:
+      - 200
+
+# Custom GitHub Actions workflow schedules
+workflowSchedule:
+  graphs: "0 0 * * *"
+  responseTime: "0 23 * * *"
+  staticSite: "0 1 * * *"
+  summary: "0 0 * * *"
+  uptime: "*/5 * * * *"
 
 status-website:
-  # Add your custom domain name, or remove the `cname` line if you don't have a domain
-  # Uncomment the `baseUrl` line if you don't have a custom domain and add your repo name there
-  cname: demo.upptime.js.org
-  # baseUrl: /your-repo-name
-  logoUrl: https://raw.githubusercontent.com/upptime/upptime.js.org/master/static/img/icon.svg
-  name: Upptime
-  introTitle: "**Upptime** is the open-source uptime monitor and status page, powered entirely by GitHub."
-  introMessage: This is a sample status page which uses **real-time** data from our [GitHub repository](https://github.com/upptime/upptime). No server required — just GitHub Actions, Issues, and Pages. [**Get your own for free**](https://github.com/upptime/upptime)
+  # No custom domain — using the default GitHub Pages base URL for this repo
+  baseUrl: /cf-status
+  name: CFly Status
+  introTitle: "Status dos Serviços CFly"
+  introMessage: "Monitoramento em tempo real dos serviços em homologação (QAS) e disponibilidade dos provedores de IA integrados."
   navbar:
-    - title: Status
-      href: /
+    - title: CFly QAS
+      href: https://app.qas.cfly.ai:11443
     - title: GitHub
       href: https://github.com/$OWNER/$REPO
+  theme: dark
 
 # Upptime also supports notifications, assigning issues, and more
 # See https://upptime.js.org/docs/configuration
